@@ -1,0 +1,8 @@
+project_name: "student-report-card-rag"
+agents:
+  rag:
+    name: "Student Report Card RAG Agent"
+    description: "AI agent for analyzing student report card data and academic performance"
+    module: "rag"
+    agent_name: "root_agent"
+    type: "conversational" 

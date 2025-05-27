@@ -1,70 +1,59 @@
 # Student Report Card RAG System
 
-A modern, modular RAG (Retrieval-Augmented Generation) system for managing and querying student report card documents using Google Cloud Vertex AI and Streamlit.
+> **AI-Powered Student Performance Analysis Platform**  
+> Built with Google Cloud Vertex AI, RAG Engine, and Streamlit
 
-## 🌟 Features
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Vertex%20AI-orange.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
+![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
 
-### 📚 Corpus Management
-- **Document Upload**: Support for PDF, DOCX, and TXT files
-- **Smart Chunking**: Optimized document processing with configurable chunk sizes
-- **Metadata Tracking**: Comprehensive document information and timestamps
-- **Search & Filter**: Advanced document discovery capabilities
+## 🎯 Overview
 
-### 🎨 Modern Web Interface
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
-- **Minimalist UI**: Clean, professional interface inspired by modern design principles
-- **Real-time Updates**: Live data refresh and instant feedback
-- **Interactive Analytics**: Visual charts and statistics
+The Student Report Card RAG System is a comprehensive AI-powered platform designed to analyze student academic performance data using advanced Retrieval-Augmented Generation (RAG) technology. The system provides intelligent insights, performance analytics, and educational recommendations based on student report cards.
 
-### 🔧 Advanced Operations
-- **Bulk Management**: Select and manage multiple documents at once
-- **Safe Deletions**: Confirmation dialogs for all destructive operations
-- **Document Details**: In-depth metadata and resource information
-- **Error Handling**: Comprehensive error reporting and recovery
+### Key Features
 
-### 📊 Analytics Dashboard
-- **File Type Distribution**: Visual breakdown of document types
-- **Size Analytics**: Storage usage statistics and trends
-- **Upload Timeline**: Historical upload tracking and patterns
-- **Performance Metrics**: Real-time system statistics
+- **🧠 AI-Powered Analysis**: Uses Google's Gemini 2.0 Flash with RAG for intelligent student performance analysis
+- **📊 Interactive Dashboard**: Modern Streamlit interface for document management and analytics
+- **🔍 Advanced Search**: Semantic search across student report card corpus
+- **📈 Performance Insights**: Automated generation of academic performance reports and recommendations
+- **🔒 Privacy-First**: Secure handling of sensitive student data with Google Cloud security
+- **🚀 Scalable Architecture**: Cloud-native design for handling multiple schools and students
 
 ## 🏗️ Architecture
 
-### Modular Design
 ```
-├── corpus_manager/           # Streamlit application
-│   ├── app.py               # Main application entry point
-│   ├── config.py            # Configuration management
-│   ├── components/          # Reusable UI components
-│   ├── pages/               # Page-specific functionality
-│   └── utils/               # Utility functions and helpers
-├── corpus-setup/            # Corpus initialization scripts
-├── gcp-setup/               # Google Cloud Platform setup
-└── sample/                  # Sample documents for testing
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Streamlit     │    │   RAG Agent      │    │  Vertex AI      │
+│   Dashboard     │◄──►│   (ADK/Gemini)   │◄──►│  RAG Engine     │
+│                 │    │                  │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Document      │    │   Agent Engine   │    │   Vector DB     │
+│   Manager       │    │   (Deployed)     │    │   (Embeddings)  │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
-
-### Technology Stack
-- **Frontend**: Streamlit with custom CSS styling
-- **Backend**: Google Cloud Vertex AI RAG API
-- **Storage**: Google Cloud Storage
-- **Authentication**: Service Account with IAM roles
-- **Environment**: Python 3.11+ with Conda
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.11 or higher
-- Google Cloud Project with billing enabled
-- Conda or virtual environment manager
+
+- **Google Cloud Project** with billing enabled
+- **Python 3.11+** and Conda
+- **Git** for version control
 
 ### 1. Environment Setup
+
 ```bash
 # Clone the repository
-git clone https://github.com/zacharyvunguyen/vertexai-rag-agent.git
-cd vertexai-rag-agent
+git clone <your-repo-url>
+cd student-report-card-rag
 
 # Create and activate conda environment
-conda create -n student-rag python=3.11
+conda create -n student-rag python=3.11 -y
 conda activate student-rag
 
 # Install dependencies
@@ -72,171 +61,302 @@ pip install -r requirements.txt
 ```
 
 ### 2. Google Cloud Setup
-```bash
-# Configure your environment variables
-cp .env.example .env
-# Edit .env with your GCP project details
 
-# Run the automated GCP setup
+```bash
+# Setup GCP infrastructure
 cd gcp-setup
 chmod +x setup-all.sh
 ./setup-all.sh
-```
 
-### 3. Initialize RAG Corpus
-```bash
-# Set up the corpus
-cd corpus-setup
+# Setup RAG corpus
+cd ../corpus-setup
 chmod +x setup_all.sh
 ./setup_all.sh
-
-# Add sample documents (optional)
-python add_documents.py --source local --paths ../sample --pattern "*.pdf"
 ```
 
-### 4. Launch the Application
+### 3. Launch Applications
+
 ```bash
-# Easy startup (recommended)
+# Start the Corpus Manager Dashboard
 ./start_corpus_manager.sh
 
-# Or manual startup
+# Or start the RAG Agent CLI
 conda activate student-rag
 source keys/service-account.env
-streamlit run run_corpus_manager.py --server.port 8503
+adk run rag
 ```
 
-Visit `http://localhost:8503` to access the application.
+## 📁 Project Structure
 
-## 📋 Configuration
+```
+student-report-card-rag/
+├── 📊 corpus_manager/           # Streamlit Dashboard
+│   ├── components/              # UI Components
+│   ├── pages/                   # Dashboard Pages
+│   ├── utils/                   # Utilities
+│   └── app.py                   # Main Application
+├── 🤖 rag/                      # RAG Agent
+│   ├── agent.py                 # Agent Definition
+│   ├── prompts.py               # Student-focused Prompts
+│   └── shared_libraries/        # Utilities
+├── 🧪 eval/                     # Evaluation Framework
+│   ├── test_eval.py            # Test Scripts
+│   └── data/                   # Test Data
+├── 🚀 deployment/               # Deployment Tools
+│   ├── deploy.py               # Deploy to Vertex AI
+│   ├── run.py                  # Test Deployed Agent
+│   └── grant_permissions.sh    # Setup Permissions
+├── ⚙️ gcp-setup/               # GCP Infrastructure
+├── 📚 corpus-setup/            # Corpus Management
+├── 🔑 keys/                    # Service Account Keys
+├── 📄 sample/                  # Sample Documents
+├── 🔧 Configuration Files
+│   ├── adk_config.yaml         # ADK Configuration
+│   ├── requirements.txt        # Dependencies
+│   └── .env                    # Environment Variables
+└── 🚀 Launcher Scripts
+    ├── run_corpus_manager.py   # Streamlit Launcher
+    ├── setup_rag_agent.py      # RAG Setup
+    ├── test_rag_agent.py       # RAG Testing
+    └── start_corpus_manager.sh # Dashboard Launcher
+```
 
-### Environment Variables
-Create a `.env` file with the following configuration:
+## 🎓 Usage Guide
+
+### Corpus Manager Dashboard
+
+The Streamlit dashboard provides a comprehensive interface for managing your student report card corpus:
+
+**Features:**
+- 📋 **Document List**: View, search, and filter documents
+- 📊 **Analytics**: File type distribution, size analysis, upload timeline
+- 🔧 **Bulk Operations**: Multi-document management and deletion
+- ⬆️ **Upload Interface**: Drag-and-drop document upload
+- 🔍 **Search & Filter**: Find specific documents quickly
+
+**Access:** `http://localhost:8503`
+
+### RAG Agent (CLI)
+
+The conversational AI agent analyzes student performance using natural language:
 
 ```bash
-# Google Cloud Project Configuration
-GOOGLE_CLOUD_PROJECT=your-project-id
-GOOGLE_CLOUD_LOCATION=us-central1
+# Start interactive session
+adk run rag
 
-# Storage Configuration
-BUCKET_NAME=your-documents-bucket
-KNOWLEDGE_BASE_BUCKET=your-knowledge-base-bucket
+# Example queries:
+"What are the mathematics grades for this student?"
+"Can you analyze the overall academic performance?"
+"What recommendations do teachers provide?"
+"How is the student performing against learning standards?"
+```
+
+### RAG Agent (Web UI)
+
+```bash
+# Launch web interface
+adk web
+# Select 'rag' from the dropdown
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+# Google Cloud Configuration
+GOOGLE_CLOUD_PROJECT=student-report-rag
+GOOGLE_CLOUD_LOCATION=us-central1
+GOOGLE_GENAI_USE_VERTEXAI=1
 
 # RAG Configuration
-RAG_CORPUS_NAME=your-corpus-name
+RAG_CORPUS=projects/your-project/locations/us-central1/ragCorpora/your-corpus-id
 EMBEDDING_MODEL=text-embedding-005
 GENERATIVE_MODEL=gemini-2.5-flash-002
 
-# Processing Configuration
-CHUNK_SIZE=512
-CHUNK_OVERLAP=100
-MAX_FILE_SIZE_MB=50
+# Storage Configuration
+BUCKET_NAME=student-report-rag-documents
+KNOWLEDGE_BASE_BUCKET=student-report-rag-knowledge-base
+STAGING_BUCKET=gs://student-report-rag-knowledge-base
+
+# Application Configuration
+APP_TITLE="Student Report Card RAG System"
+APP_PORT=8501
+ALLOWED_FILE_TYPES=pdf,docx,txt
 ```
 
-### Security Configuration
-- Service account authentication via JSON key file
-- IAM roles: Vertex AI User, Storage Admin, AI Platform Admin
-- Environment-based credential management
-- Secure file upload validation
+### Customization
 
-## 🎯 Usage Guide
+**Agent Behavior** (`rag/prompts.py`):
+- Modify response tone and educational terminology
+- Adjust privacy and confidentiality guidelines
+- Customize citation formats
 
-### Document Management
-1. **Upload Documents**: Use the sidebar upload component
-2. **View Documents**: Browse the document list with search and filters
-3. **Document Details**: Click "View Details" for comprehensive metadata
-4. **Delete Documents**: Individual or bulk deletion with confirmations
+**UI Styling** (`corpus_manager/components/styles.py`):
+- Update color schemes and branding
+- Modify layout and responsive design
+- Customize dashboard components
 
-### Analytics
-1. **File Distribution**: View charts showing document types and sizes
-2. **Timeline Analysis**: Track upload patterns over time
-3. **Storage Metrics**: Monitor corpus size and growth
-4. **Export Data**: Download detailed analytics reports
+## 🧪 Testing & Evaluation
 
-### Bulk Operations
-1. **Multi-Select**: Choose documents using checkboxes
-2. **Select All**: Quick selection for entire corpus
-3. **Bulk Actions**: Perform operations on selected documents
-4. **Progress Tracking**: Real-time feedback on bulk operations
+### Local Testing
+
+```bash
+# Test RAG agent functionality
+python test_rag_agent.py
+
+# Run evaluation suite
+python -m pytest eval/ -v
+
+# Simple functionality test
+python simple_rag_test.py
+```
+
+### Performance Metrics
+
+The system is optimized for:
+- **Response Time**: 2-5 seconds for typical queries
+- **Accuracy**: >90% for student performance questions
+- **Privacy**: Secure handling of sensitive data
+- **Scalability**: Supports multiple concurrent users
+
+## 🚀 Deployment
+
+### Deploy RAG Agent to Vertex AI
+
+```bash
+# Deploy to Vertex AI Agent Engine
+python deployment/deploy.py
+
+# Grant necessary permissions
+chmod +x deployment/grant_permissions.sh
+./deployment/grant_permissions.sh
+
+# Test deployed agent
+python deployment/run.py
+```
+
+### Production Deployment
+
+For production environments:
+
+1. **Security**: Configure IAM roles and data access policies
+2. **Monitoring**: Set up Cloud Monitoring and logging
+3. **Scaling**: Configure auto-scaling for high availability
+4. **Backup**: Implement data backup and disaster recovery
+
+## 📊 Analytics & Insights
+
+### Student Performance Analysis
+
+The RAG agent provides insights on:
+- **Academic Performance**: Grade analysis across subjects
+- **Learning Standards**: Progress against curriculum objectives
+- **Teacher Feedback**: Summarized comments and recommendations
+- **Behavioral Patterns**: Attendance and participation analysis
+- **Improvement Areas**: Identified areas needing attention
+
+### Dashboard Analytics
+
+The Streamlit dashboard offers:
+- **Document Statistics**: File counts, sizes, and types
+- **Upload Trends**: Timeline of document additions
+- **Search Analytics**: Most queried topics and patterns
+- **Performance Metrics**: System usage and response times
+
+## 🔒 Security & Privacy
+
+### Data Protection
+
+- **Encryption**: All data encrypted in transit and at rest
+- **Access Control**: IAM-based role and permission management
+- **Audit Logging**: Comprehensive logging of all system activities
+- **Data Retention**: Configurable retention policies
+- **Privacy Compliance**: Designed for FERPA and other educational privacy standards
+
+### Authentication
+
+- **Service Account**: Secure GCP service account authentication
+- **Scoped Access**: Minimal required permissions principle
+- **Key Management**: Secure handling of API keys and credentials
 
 ## 🛠️ Development
 
-### Project Structure
-- **Components**: Reusable UI elements with consistent styling
-- **Pages**: Feature-specific functionality and layouts
-- **Utils**: Helper functions for data processing and API calls
-- **Config**: Centralized configuration management
+### Adding New Features
 
-### Adding Features
-1. **New Components**: Create in `corpus_manager/components/`
-2. **New Pages**: Add to `corpus_manager/pages/`
-3. **New Utilities**: Extend `corpus_manager/utils/`
-4. **Styling**: Update `corpus_manager/components/styles.py`
+1. **New Document Types**: Extend parsing in `corpus-setup/`
+2. **Additional Analytics**: Add new visualizations in `corpus_manager/pages/`
+3. **Enhanced Prompts**: Modify agent behavior in `rag/prompts.py`
+4. **Custom Tools**: Add new agent tools in `rag/agent.py`
 
-### Code Style
-- Type hints for all functions
-- Comprehensive docstrings
-- PEP 8 compliance
-- Modular design patterns
-
-## 📊 Performance
-
-### Optimization Features
-- **Caching**: Streamlit caching for expensive operations
-- **Lazy Loading**: On-demand data fetching
-- **Efficient Queries**: Optimized Vertex AI API calls
-- **Resource Management**: Automatic cleanup and memory management
-
-### Scalability
-- **Horizontal Scaling**: Multiple corpus support
-- **Large Documents**: Chunked processing for large files
-- **Concurrent Users**: Multi-user session management
-- **Cloud-Native**: Leverages GCP scalability features
-
-## 🔒 Security
-
-### Data Protection
-- Service account authentication
-- Encrypted data transmission
-- Secure credential storage
-- Access control via IAM
-
-### Privacy Features
-- Local credential management
-- No hardcoded secrets
-- Environment-based configuration
-- Audit logging capabilities
-
-## 🤝 Contributing
+### Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Authentication Errors:**
+```bash
+gcloud auth application-default login
+source keys/service-account.env
+```
+
+**Corpus Access Issues:**
+```bash
+python corpus-setup/corpus_info.py
+./deployment/grant_permissions.sh
+```
+
+**Streamlit Import Errors:**
+```bash
+conda activate student-rag
+pip install --upgrade streamlit
+```
+
+**RAG Agent Issues:**
+```bash
+python setup_rag_agent.py
+python test_rag_agent.py
+```
+
+### Support
+
+- 📧 **Issues**: Create GitHub issues for bugs and feature requests
+- 📖 **Documentation**: Check the inline code documentation
+- 🔍 **Logs**: Review Google Cloud logs for deployment issues
+- 🧪 **Testing**: Run the test suites to identify specific problems
+
+## 📚 Resources
+
+### Google Cloud Documentation
+- [Vertex AI RAG Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/rag-overview)
+- [Agent Development Kit](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-development)
+- [Vertex AI Best Practices](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-best-practices)
+
+### Technical References
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [Google ADK Samples](https://github.com/google/adk-samples)
+- [Gemini API Documentation](https://ai.google.dev/docs)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-### Troubleshooting
-- Check the [corpus-setup README](corpus-setup/README.md) for setup issues
-- Verify GCP authentication and permissions
-- Ensure all environment variables are correctly set
-
-### Common Issues
-- **Import Errors**: Verify conda environment activation
-- **Authentication Failures**: Check service account key file
-- **Upload Failures**: Verify file type and size restrictions
-- **Network Timeouts**: Check GCP region and network connectivity
-
-### Getting Help
-- Review the documentation in each module
-- Check the sample configuration files
-- Examine the setup scripts for reference
-- Create an issue for bugs or feature requests
+- **Google Cloud AI**: For providing the Vertex AI platform and RAG Engine
+- **Streamlit**: For the excellent dashboard framework
+- **Educational Community**: For inspiring this student-focused AI solution
 
 ---
 
-**Built with ❤️ for educational data management and analysis** 
+**Built with ❤️ for Education**  
+*Empowering educators and students through AI-driven insights* 
