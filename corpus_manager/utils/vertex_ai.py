@@ -1,17 +1,22 @@
 """
-Vertex AI utilities for RAG corpus management.
-Handles all interactions with Vertex AI RAG API.
+Vertex AI utilities for the RAG Corpus Manager.
+Handles corpus operations and document management.
 """
 
-import streamlit as st
-import vertexai
-from vertexai import rag
-from typing import List, Dict, Optional
-from datetime import datetime
-import tempfile
 import os
+import streamlit as st
+from typing import List, Dict, Optional, Tuple
+import json
+import time
+import tempfile
+from datetime import datetime
+from io import BytesIO
 
-from ..config import PROJECT_ID, LOCATION, RAG_CORPUS_NAME, UPLOAD_CHUNK_SIZE, UPLOAD_CHUNK_OVERLAP
+import vertexai
+from vertexai.preview import rag
+from google.cloud import aiplatform
+
+from corpus_manager.config import PROJECT_ID, LOCATION, RAG_CORPUS_NAME, UPLOAD_CHUNK_SIZE, UPLOAD_CHUNK_OVERLAP
 
 
 @st.cache_resource
@@ -28,6 +33,11 @@ def initialize_vertex_ai():
 def find_corpus() -> Optional[str]:
     """Find the corpus resource name."""
     try:
+        # If RAG_CORPUS_NAME is already a full path (starts with 'projects/'), use it directly
+        if RAG_CORPUS_NAME and RAG_CORPUS_NAME.startswith('projects/'):
+            return RAG_CORPUS_NAME
+        
+        # Otherwise, try to find by display name
         corpora = rag.list_corpora()
         for corpus in corpora:
             if corpus.display_name == RAG_CORPUS_NAME:

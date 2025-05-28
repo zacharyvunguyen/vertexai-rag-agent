@@ -1,12 +1,12 @@
 """
 Document list page for the RAG Corpus Manager.
-Handles document listing, search, filtering, and individual document operations.
+Displays all documents in the corpus with search and delete functionality.
 """
 
 import streamlit as st
 from typing import List, Dict
-from ..utils.formatters import format_file_size, format_date, format_resource_id
-from ..utils.vertex_ai import delete_document
+from corpus_manager.utils.formatters import format_file_size, format_date, format_resource_id
+from corpus_manager.utils.vertex_ai import delete_document
 
 
 def render_document_list(documents: List[Dict]):

@@ -14,3 +14,12 @@ markdown>=3.5.0
 pdfkit>=1.0.0
 # Note: pdfkit requires wkhtmltopdf to be installed separately
 # Install with: brew install wkhtmltopdf (macOS) or apt-get install wkhtmltopdf (Ubuntu)
+
+# Enhanced Streamlit Components
+streamlit-elements
+streamlit-aggrid
+streamlit-option-menu
+streamlit-lottie
+streamlit-card
+streamlit-extras
+plotly

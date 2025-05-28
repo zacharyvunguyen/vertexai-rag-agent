@@ -5,7 +5,7 @@ Allows users to select multiple documents and perform bulk operations like delet
 
 import streamlit as st
 from typing import List, Dict
-from ..utils.vertex_ai import bulk_delete_documents
+from corpus_manager.utils.vertex_ai import bulk_delete_documents
 
 
 def render_bulk_operations(documents: List[Dict]):

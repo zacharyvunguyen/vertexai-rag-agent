@@ -1,42 +1,381 @@
 #!/usr/bin/env python3
 """
-Main Streamlit application for the RAG Corpus Manager.
-A modern, minimalist interface for managing RAG corpus documents.
+Modern RAG Corpus Manager with Enhanced UI Components
+Built with the latest Streamlit components for a standout experience.
 """
 
 import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime
+import requests
+import json
 
-# Import configuration and validation
-from .config import PAGE_TITLE, PAGE_ICON, LAYOUT, validate_config
+# Enhanced Streamlit Components
+from streamlit_option_menu import option_menu
+from streamlit_lottie import st_lottie
+from streamlit_extras.metric_cards import style_metric_cards
+from streamlit_extras.colored_header import colored_header
+from streamlit_extras.add_vertical_space import add_vertical_space
+from streamlit_extras.stateful_button import button as stateful_button
 
-# Import components
-from .components.styles import apply_custom_css
-from .components.header import render_header
-from .components.metrics import render_metrics
-from .components.sidebar import render_sidebar
+# Use absolute imports to avoid module loading issues
+from corpus_manager.config import PAGE_TITLE, PAGE_ICON, LAYOUT, validate_config, SUPPORTED_FILE_TYPES, MAX_FILE_SIZE_MB
+from corpus_manager.utils.vertex_ai import (
+    initialize_vertex_ai, 
+    find_corpus, 
+    get_corpus_documents,
+    get_corpus_stats,
+    upload_document,
+    delete_document
+)
+from corpus_manager.utils.formatters import (
+    format_file_size, 
+    format_date, 
+    format_resource_id
+)
 
-# Import pages
-from .pages.document_list import render_document_list
-from .pages.analytics import render_analytics
-from .pages.bulk_operations import render_bulk_operations
 
-# Import utilities
-from .utils.vertex_ai import initialize_vertex_ai, find_corpus, get_corpus_documents, upload_document, bulk_delete_documents
+def load_lottieurl(url: str):
+    """Load Lottie animation from URL."""
+    try:
+        r = requests.get(url)
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except:
+        return None
+
+
+def create_file_type_chart(stats):
+    """Create an interactive file type distribution chart."""
+    if not stats['file_types']:
+        return None
+    
+    fig = px.pie(
+        values=list(stats['file_types'].values()),
+        names=list(stats['file_types'].keys()),
+        title="Document Types Distribution",
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    fig.update_traces(textposition='inside', textinfo='percent+label')
+    fig.update_layout(
+        height=300,
+        showlegend=True,
+        title_font_size=16,
+        font=dict(size=12)
+    )
+    return fig
+
+
+def create_corpus_metrics_chart(stats):
+    """Create a gauge chart for corpus health."""
+    # Simple health metric based on document count
+    health_score = min(100, (stats['total_documents'] / 10) * 100)  # 10 docs = 100% health
+    
+    fig = go.Figure(go.Indicator(
+        mode = "gauge+number+delta",
+        value = health_score,
+        domain = {'x': [0, 1], 'y': [0, 1]},
+        title = {'text': "Corpus Health Score"},
+        delta = {'reference': 80},
+        gauge = {
+            'axis': {'range': [None, 100]},
+            'bar': {'color': "darkblue"},
+            'steps': [
+                {'range': [0, 50], 'color': "lightgray"},
+                {'range': [50, 80], 'color': "yellow"},
+                {'range': [80, 100], 'color': "lightgreen"}
+            ],
+            'threshold': {
+                'line': {'color': "red", 'width': 4},
+                'thickness': 0.75,
+                'value': 90
+            }
+        }
+    ))
+    fig.update_layout(height=300)
+    return fig
+
+
+def render_dashboard_page(corpus_resource_name, documents, stats):
+    """Render the main dashboard page."""
+    # Header with animation
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        colored_header(
+            label="📚 Corpus Analytics Dashboard",
+            description="Real-time insights into your RAG corpus",
+            color_name="blue-70"
+        )
+    
+    with col2:
+        # Load Lottie animation
+        lottie_url = "https://assets5.lottiefiles.com/packages/lf20_fcfjwiyb.json"  # Books animation
+        lottie_json = load_lottieurl(lottie_url)
+        if lottie_json:
+            st_lottie(lottie_json, height=100, key="dashboard_animation")
+    
+    add_vertical_space(2)
+    
+    # Enhanced metrics with styling
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric(
+            label="📄 Total Documents",
+            value=stats['total_documents'],
+            delta=f"+{stats['total_documents']}" if stats['total_documents'] > 0 else None
+        )
+    
+    with col2:
+        st.metric(
+            label="💾 Total Size",
+            value=format_file_size(stats['total_size']),
+            delta="Optimized" if stats['total_size'] > 0 else None
+        )
+    
+    with col3:
+        file_types_count = len(stats['file_types'])
+        st.metric(
+            label="📋 File Types",
+            value=file_types_count,
+            delta=f"{file_types_count} types" if file_types_count > 0 else None
+        )
+    
+    with col4:
+        latest_upload = stats['latest_upload']
+        if latest_upload:
+            st.metric(
+                label="⏰ Latest Upload",
+                value=format_date(latest_upload),
+                delta="Recent"
+            )
+        else:
+            st.metric(label="⏰ Latest Upload", value="No uploads")
+    
+    # Apply metric card styling
+    style_metric_cards(
+        background_color="#FFFFFF",
+        border_left_color="#686664",
+        border_color="#000000",
+        box_shadow="#F71938"
+    )
+    
+    add_vertical_space(2)
+    
+    # Charts section
+    if documents:
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # File type distribution
+            file_chart = create_file_type_chart(stats)
+            if file_chart:
+                st.plotly_chart(file_chart, use_container_width=True)
+        
+        with col2:
+            # Corpus health gauge
+            health_chart = create_corpus_metrics_chart(stats)
+            st.plotly_chart(health_chart, use_container_width=True)
+    
+    # Technical details in an expander
+    with st.expander("🔧 Technical Configuration", expanded=False):
+        st.code(f"""
+Corpus Resource: {corpus_resource_name}
+Project ID: {corpus_resource_name.split('/')[1] if '/' in corpus_resource_name else 'N/A'}
+Location: {corpus_resource_name.split('/')[3] if '/' in corpus_resource_name else 'N/A'}
+Total Documents: {stats['total_documents']}
+        """)
+
+
+def render_upload_page(corpus_resource_name):
+    """Render the document upload page."""
+    colored_header(
+        label="📤 Upload Documents",
+        description="Add new report cards and documents to your corpus",
+        color_name="green-70"
+    )
+    
+    # Animation for upload
+    col1, col2 = st.columns([3, 1])
+    
+    with col2:
+        lottie_url = "https://assets4.lottiefiles.com/packages/lf20_u4yrau.json"  # Upload animation
+        lottie_json = load_lottieurl(lottie_url)
+        if lottie_json:
+            st_lottie(lottie_json, height=150, key="upload_animation")
+    
+    with col1:
+        add_vertical_space(2)
+        
+        uploaded_file = st.file_uploader(
+            "Choose a file to upload",
+            type=SUPPORTED_FILE_TYPES,
+            help=f"Supported formats: {', '.join(SUPPORTED_FILE_TYPES)}. Max size: {MAX_FILE_SIZE_MB}MB"
+        )
+        
+        if uploaded_file is not None:
+            # Enhanced file info display
+            file_size = len(uploaded_file.getvalue())
+            
+            # File info card
+            st.info(f"""
+            📄 **File Information**
+            - Name: {uploaded_file.name}
+            - Size: {format_file_size(file_size)}
+            - Type: {uploaded_file.type}
+            """)
+            
+            # Progress visualization
+            size_percentage = min(100, (file_size / (MAX_FILE_SIZE_MB * 1024 * 1024)) * 100)
+            st.progress(size_percentage / 100)
+            st.caption(f"File size: {size_percentage:.1f}% of maximum allowed")
+            
+            # Check file size
+            if file_size > MAX_FILE_SIZE_MB * 1024 * 1024:
+                st.error(f"❌ File size ({format_file_size(file_size)}) exceeds maximum allowed size ({MAX_FILE_SIZE_MB}MB)")
+            else:
+                add_vertical_space(1)
+                
+                # Enhanced upload button
+                if st.button("🚀 Upload to Corpus", type="primary", use_container_width=True):
+                    with st.spinner("Uploading document to corpus..."):
+                        progress_bar = st.progress(0)
+                        for i in range(100):
+                            progress_bar.progress((i + 1) / 100)
+                        
+                        if upload_document(uploaded_file, corpus_resource_name):
+                            st.success(f"✅ Successfully uploaded '{uploaded_file.name}' to the corpus!")
+                            st.balloons()  # Celebration animation
+                            st.cache_data.clear()
+                            st.rerun()
+                        else:
+                            st.error("❌ Failed to upload document. Please try again.")
+
+
+def render_documents_page(documents):
+    """Render the documents management page."""
+    colored_header(
+        label="📄 Document Management",
+        description="View and manage documents in your corpus",
+        color_name="violet-70"
+    )
+    
+    if not documents:
+        # Empty state with animation
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            lottie_url = "https://assets1.lottiefiles.com/packages/lf20_ysas5vsj.json"  # Empty state
+            lottie_json = load_lottieurl(lottie_url)
+            if lottie_json:
+                st_lottie(lottie_json, height=200, key="empty_state")
+            st.warning("No documents found in the corpus.")
+            st.info("Upload your first document using the Upload tab.")
+        return
+    
+    # Documents table with enhanced styling
+    for i, doc in enumerate(documents):
+        with st.container():
+            col1, col2, col3, col4, col5 = st.columns([3, 1, 2, 2, 1])
+            
+            with col1:
+                st.markdown(f"📄 **{doc['display_name']}**")
+            
+            with col2:
+                st.markdown(f"`{format_file_size(doc['size_bytes'])}`")
+            
+            with col3:
+                st.markdown(f"📅 {format_date(doc['create_time']) if doc['create_time'] else 'Unknown'}")
+            
+            with col4:
+                st.markdown(f"🔗 `{format_resource_id(doc['name'])}`")
+            
+            with col5:
+                if stateful_button("🗑️", key=f"delete_{i}", help=f"Delete {doc['display_name']}"):
+                    st.session_state[f'confirm_delete_{i}'] = True
+                    st.rerun()
+            
+            # Confirmation dialog
+            if st.session_state.get(f'confirm_delete_{i}', False):
+                st.warning(f"⚠️ Delete **{doc['display_name']}**? This action cannot be undone.")
+                
+                col_yes, col_no = st.columns(2)
+                with col_yes:
+                    if st.button("✅ Confirm Delete", key=f"confirm_yes_{i}", type="primary"):
+                        with st.spinner(f"Deleting {doc['display_name']}..."):
+                            if delete_document(doc['name'], doc['display_name']):
+                                st.success(f"✅ Successfully deleted '{doc['display_name']}'")
+                                st.session_state[f'confirm_delete_{i}'] = False
+                                st.cache_data.clear()
+                                st.rerun()
+                            else:
+                                st.error(f"❌ Failed to delete '{doc['display_name']}'")
+                
+                with col_no:
+                    if st.button("❌ Cancel", key=f"confirm_no_{i}"):
+                        st.session_state[f'confirm_delete_{i}'] = False
+                        st.rerun()
+                
+                break
+            
+            st.divider()
 
 
 def main():
-    """Main application function."""
-    
-    # Configure Streamlit page
+    """Main application function with enhanced UI."""
     st.set_page_config(
         page_title=PAGE_TITLE,
         page_icon=PAGE_ICON,
         layout=LAYOUT,
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="collapsed"
     )
     
-    # Apply custom CSS styles
-    apply_custom_css()
+    # Custom CSS for enhanced styling
+    st.markdown("""
+    <style>
+    .main-header {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #667eea;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Main header
+    st.markdown("""
+    <div class="main-header">
+        <h1>📚 Student Report Card RAG Corpus Manager</h1>
+        <p>Modern document management with AI-powered insights</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Validate configuration
     try:
@@ -44,9 +383,6 @@ def main():
     except ValueError as e:
         st.error(f"Configuration Error: {e}")
         st.stop()
-    
-    # Render header
-    render_header()
     
     # Initialize Vertex AI
     if not initialize_vertex_ai():
@@ -56,104 +392,85 @@ def main():
     # Find corpus
     corpus_resource_name = find_corpus()
     if not corpus_resource_name:
-        st.error("Corpus not found. Please create it first using the setup scripts.")
+        st.error("Could not find the RAG corpus. Please check your configuration.")
         st.stop()
     
-    # Render sidebar and get user actions
-    sidebar_actions = render_sidebar()
-    
-    # Handle sidebar actions
-    _handle_sidebar_actions(sidebar_actions, corpus_resource_name)
-    
-    # Get documents from corpus
+    # Get documents and stats
     documents = get_corpus_documents(corpus_resource_name)
+    stats = get_corpus_stats(documents)
     
-    # Render metrics
-    render_metrics(documents)
+    # Enhanced navigation menu
+    selected = option_menu(
+        menu_title=None,
+        options=["📊 Dashboard", "📤 Upload", "📄 Documents", "⚙️ Settings"],
+        icons=["graph-up", "upload", "files", "gear"],
+        menu_icon="cast",
+        default_index=0,
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "0!important", "background-color": "#fafafa"},
+            "icon": {"color": "orange", "font-size": "25px"},
+            "nav-link": {
+                "font-size": "16px",
+                "text-align": "center",
+                "margin": "0px",
+                "--hover-color": "#eee",
+            },
+            "nav-link-selected": {"background-color": "#667eea"},
+        }
+    )
     
-    # Create tabs for different views
-    tab1, tab2, tab3 = st.tabs(["📋 Document List", "📊 Analytics", "🔧 Bulk Operations"])
+    add_vertical_space(2)
     
-    with tab1:
-        render_document_list(documents)
+    # Render selected page
+    if selected == "📊 Dashboard":
+        render_dashboard_page(corpus_resource_name, documents, stats)
     
-    with tab2:
-        render_analytics(documents)
+    elif selected == "📤 Upload":
+        render_upload_page(corpus_resource_name)
     
-    with tab3:
-        render_bulk_operations(documents)
+    elif selected == "📄 Documents":
+        render_documents_page(documents)
     
-    # Handle delete all modal
-    _handle_delete_all_modal(documents)
-
-
-def _handle_sidebar_actions(actions: dict, corpus_resource_name: str):
-    """Handle actions from the sidebar."""
-    
-    # Handle refresh
-    if actions['refresh_clicked']:
-        st.cache_data.clear()
-        st.rerun()
-    
-    # Handle upload
-    if actions['upload_clicked'] and actions['uploaded_file']:
-        with st.spinner("Uploading document..."):
-            if upload_document(actions['uploaded_file'], corpus_resource_name):
-                st.success(f"Successfully uploaded '{actions['uploaded_file'].name}'!")
-                st.cache_data.clear()
-                st.rerun()
-    
-    # Handle delete all
-    if actions['delete_all_clicked']:
-        st.session_state.show_delete_all_modal = True
-
-
-def _handle_delete_all_modal(documents: list):
-    """Handle the delete all documents modal."""
-    if st.session_state.get('show_delete_all_modal', False):
-        st.markdown("---")
+    elif selected == "⚙️ Settings":
+        colored_header(
+            label="⚙️ System Settings",
+            description="Configuration and system information",
+            color_name="red-70"
+        )
         
-        # Warning message
-        st.markdown("""
-        <div class="alert alert-error">
-            <h4>⚠️ Delete All Documents</h4>
-            <p>This action will permanently delete ALL documents from the corpus. This cannot be undone.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        # System status
+        st.success("✅ Corpus manager is connected and operational")
+        st.info("💡 This corpus is being used by your Student Report Card RAG multi-agent system")
         
-        # Show document count
-        st.warning(f"This will delete **{len(documents)} documents** from the corpus.")
-        
-        # Confirmation buttons
+        # Quick actions
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("🗑️ Yes, Delete All", type="primary", key="confirm_delete_all"):
-                with st.spinner("Deleting all documents..."):
-                    # Prepare document info for deletion
-                    doc_names = [doc['name'] for doc in documents]
-                    display_names = [doc['display_name'] for doc in documents]
-                    
-                    # Perform bulk deletion
-                    result = bulk_delete_documents(doc_names, display_names)
-                    
-                    # Show results
-                    if result['deleted'] == result['total']:
-                        st.success(f"✅ Successfully deleted all {result['deleted']} documents!")
-                    elif result['deleted'] > 0:
-                        st.warning(f"⚠️ Deleted {result['deleted']} of {result['total']} documents. {result['failed']} failed.")
-                    else:
-                        st.error(f"❌ Failed to delete any documents. {result['failed']} failed.")
-                    
-                    # Clear the modal and cache
-                    st.session_state.show_delete_all_modal = False
-                    st.cache_data.clear()
-                    st.rerun()
+            if st.button("🔄 Refresh Data", use_container_width=True):
+                st.cache_data.clear()
+                st.rerun()
         
         with col2:
-            if st.button("❌ Cancel", key="cancel_delete_all"):
-                st.session_state.show_delete_all_modal = False
-                st.rerun()
+            if st.button("🌐 Open Vertex AI Studio", use_container_width=True):
+                st.link_button(
+                    "Open in Vertex AI Studio",
+                    "https://console.cloud.google.com/vertex-ai/studio",
+                    use_container_width=True
+                )
+        
+        # Configuration display
+        with st.expander("📋 Configuration Details", expanded=False):
+            config_data = {
+                "Corpus Resource": corpus_resource_name,
+                "Supported File Types": ", ".join(SUPPORTED_FILE_TYPES),
+                "Max File Size": f"{MAX_FILE_SIZE_MB}MB",
+                "Current Documents": stats['total_documents'],
+                "Total Size": format_file_size(stats['total_size'])
+            }
+            
+            for key, value in config_data.items():
+                st.text(f"{key}: {value}")
 
 
 if __name__ == "__main__":
