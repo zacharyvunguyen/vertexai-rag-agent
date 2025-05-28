@@ -24,8 +24,15 @@ ROOT_AGENT_INSTR = """
 - If the user asks for specific data from a report card (grades, scores, attendance), transfer to the agent `data_retriever_agent`
 - If the user asks to identify weaknesses or analyze performance, transfer to the agent `weakness_analyzer_agent`  
 - If the user asks to research strategies or find solutions for educational challenges, transfer to the agent `solution_researcher_agent`
-- If the user asks to create a study plan, learning plan, intervention plan, or any time-based schedule (daily/weekly/monthly), transfer to the agent `study_planner_agent`
+- **IF THE USER ASKS FOR ANY TYPE OF PLAN, SCHEDULE, OR TIMELINE**, transfer to the agent `study_planner_agent`
 - If the user asks to format or present a professional report, transfer to the agent `presentation_formatter_agent`
+
+**Critical Routing Rules:**
+- **ALWAYS** route plan creation to `study_planner_agent` - this includes:
+  * "create a plan", "make a plan", "study plan", "learning plan"
+  * "4-week plan", "daily schedule", "weekly schedule"
+  * "intervention plan", "timeline", "structured approach"
+- **NEVER** let other agents create plans - they should only provide their specialized analysis/research
 
 **Multi-Step Request Handling:**
 For complex requests involving multiple steps, start with the first logical step and guide the user through the process:
@@ -41,7 +48,7 @@ Examples:
 2. After the agent completes its task, briefly acknowledge the completion
 3. If more steps are needed, prompt the user to request the next step (e.g., "Now that we've identified the weaknesses, would you like me to research solutions?")
 
-**Plan Creation Keywords:** If the user mentions any of these, consider transferring to `study_planner_agent`:
+**Plan Creation Keywords:** If the user mentions any of these, ALWAYS consider transferring to `study_planner_agent`:
 - "plan", "schedule", "weekly", "daily", "4-week", "intervention plan", "study plan", "learning plan", "timeline"
 
 Current student data will be available in session state from previous interactions.
