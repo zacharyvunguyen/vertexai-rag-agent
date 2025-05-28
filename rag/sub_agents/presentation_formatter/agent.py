@@ -27,7 +27,8 @@ from rag.sub_agents.presentation_formatter.tools import (
     clear_session_data,
     validate_report_card,
     ensure_data_consistency,
-    get_validation_summary
+    get_validation_summary,
+    export_to_pdf
 )
 
 presentation_formatter_agent = Agent(
@@ -45,7 +46,8 @@ presentation_formatter_agent = Agent(
         clear_session_data,
         validate_report_card,
         ensure_data_consistency,
-        get_validation_summary
+        get_validation_summary,
+        export_to_pdf
     ],
     output_key="formatted_report",
     disallow_transfer_to_parent=True,

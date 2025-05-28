@@ -14,7 +14,7 @@
 
 """Presentation formatter specific tools."""
 
-from .report_formatter import format_comprehensive_report, export_report_sections, get_session_summary
+from .report_formatter import format_comprehensive_report, export_report_sections, get_session_summary, export_to_pdf
 
 # Import global memory and validation tools for comprehensive reporting
 from rag.tools.memory import memorize_analysis, forget_analysis, get_session_summary as get_global_session_summary, clear_session_data
@@ -24,6 +24,7 @@ __all__ = [
     "format_comprehensive_report",
     "export_report_sections",
     "get_session_summary",
+    "export_to_pdf",
     # Global memory management
     "memorize_analysis",
     "forget_analysis",

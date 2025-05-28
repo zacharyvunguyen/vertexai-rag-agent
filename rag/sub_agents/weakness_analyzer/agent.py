@@ -14,35 +14,16 @@
 
 """Weakness Analyzer agent for identifying academic weaknesses from report cards."""
 
-import os
 from google.adk.agents import Agent
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
-from vertexai.preview import rag
-from dotenv import load_dotenv
-
 from rag.sub_agents.weakness_analyzer.prompt import WEAKNESS_ANALYZER_INSTR
-
-load_dotenv()
-
-# RAG Tool for data analysis
-RAG_CORPUS = os.environ.get("RAG_CORPUS")
-if not RAG_CORPUS:
-    raise ValueError("RAG_CORPUS environment variable not set.")
-
-report_card_retrieval_tool = VertexAiRagRetrieval(
-    name="retrieve_student_report_data",
-    description="Retrieves comprehensive report card data for analysis.",
-    rag_resources=[rag.RagResource(rag_corpus=RAG_CORPUS)],
-    similarity_top_k=5,
-    vector_distance_threshold=0.7,
-)
+from rag.tools.rag_retrieval import rag_retrieval_grounding
 
 weakness_analyzer_agent = Agent(
     model="gemini-2.0-flash",
     name="weakness_analyzer_agent",
     description="Analyzes report card data to identify academic weaknesses and areas needing improvement",
     instruction=WEAKNESS_ANALYZER_INSTR,
-    tools=[report_card_retrieval_tool],
+    tools=[rag_retrieval_grounding],
     output_key="identified_weaknesses",
     disallow_transfer_to_parent=True,
     disallow_transfer_to_peers=True,
