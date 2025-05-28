@@ -15,7 +15,6 @@
 """Student Report Card RAG Multi-Agent System following ADK best practices."""
 
 from google.adk.agents import Agent
-from google.adk.tools.agent_tool import AgentTool
 
 from rag import prompt
 from rag.sub_agents.data_retriever.agent import data_retriever_agent
@@ -24,18 +23,21 @@ from rag.sub_agents.solution_researcher.agent import solution_researcher_agent
 from rag.sub_agents.study_planner.agent import study_planner_agent
 from rag.sub_agents.presentation_formatter.agent import presentation_formatter_agent
 
+from rag.tools.memory import load_sample_profile
+
 root_agent = Agent(
     model="gemini-2.0-flash",
     name="root_agent",
-    description="Educational Analysis Coordinator that helps analyze student report cards and create improvement plans",
+    description="An educational assistant that analyzes student report cards and creates personalized learning plans",
     instruction=prompt.ROOT_AGENT_INSTR,
-    tools=[
-        AgentTool(agent=data_retriever_agent),
-        AgentTool(agent=weakness_analyzer_agent),
-        AgentTool(agent=solution_researcher_agent),
-        AgentTool(agent=study_planner_agent),
-        AgentTool(agent=presentation_formatter_agent),
+    sub_agents=[
+        data_retriever_agent,
+        weakness_analyzer_agent,
+        solution_researcher_agent,
+        study_planner_agent,
+        presentation_formatter_agent,
     ],
+    before_agent_callback=load_sample_profile,
 )
 
 # Note: The `adk_config.yaml` should point to this `root_agent`.

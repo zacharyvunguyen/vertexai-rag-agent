@@ -17,12 +17,14 @@
 from google.adk.agents import Agent
 
 from rag.sub_agents.study_planner.prompt import STUDY_PLANNER_INSTR
+from rag.sub_agents.study_planner.tools import find_educational_resources, organize_study_schedule, store_study_plan
 
 study_planner_agent = Agent(
     model="gemini-2.0-flash",
     name="study_planner_agent",
     description="Creates personalized study plans based on identified weaknesses and researched solutions",
     instruction=STUDY_PLANNER_INSTR,
+    tools=[find_educational_resources, organize_study_schedule, store_study_plan],
     output_key="personalized_plan",
     disallow_transfer_to_parent=True,
     disallow_transfer_to_peers=True,

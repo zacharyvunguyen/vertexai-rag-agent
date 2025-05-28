@@ -21,6 +21,7 @@ from vertexai.preview import rag
 from dotenv import load_dotenv
 
 from rag.sub_agents.data_retriever.prompt import DATA_RETRIEVER_INSTR
+from rag.sub_agents.data_retriever.tools import extract_student_info, store_analysis_results
 
 load_dotenv()
 
@@ -42,7 +43,7 @@ data_retriever_agent = Agent(
     name="data_retriever_agent",
     description="Retrieves specific, factual data points from student report cards",
     instruction=DATA_RETRIEVER_INSTR,
-    tools=[report_card_retrieval_tool],
+    tools=[report_card_retrieval_tool, extract_student_info, store_analysis_results],
     disallow_transfer_to_parent=True,
     disallow_transfer_to_peers=True,
 ) 
