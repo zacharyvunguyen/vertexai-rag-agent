@@ -77,14 +77,31 @@ temp/
 .pytest_cache/
 
 # Streamlit
-.streamlit/secrets.toml
+.streamlit/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Project specific
+travel_concierge/
+
+# Test artifacts
+test_*.py
+*_test.py
+.coverage
+htmlcov/
+
+# Generated reports
+reports/
+*.pdf
+*.html
+
+# ADK artifacts
+.adk/
 
 # Google Cloud
 gcloud/
 .gcloudignore
-
-# Jupyter Notebooks
-.ipynb_checkpoints
 
 # Coverage reports
 htmlcov/
@@ -111,7 +128,4 @@ docs/_build/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
-
-# Travel Concierge - example project to ignore
-travel_concierge/ 
+yarn-error.log* 
