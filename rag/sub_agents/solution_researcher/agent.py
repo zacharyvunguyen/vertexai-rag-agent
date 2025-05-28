@@ -18,14 +18,13 @@ from google.adk.agents import Agent
 from google.adk.tools import google_search
 
 from rag.sub_agents.solution_researcher.prompt import SOLUTION_RESEARCHER_INSTR
-from rag.tools.rag_retrieval import rag_retrieval_grounding
 
 solution_researcher_agent = Agent(
     model="gemini-2.0-flash",
     name="solution_researcher_agent",
-    description="Researches evidence-based strategies and resources for educational challenges using both internal corpus and current web research",
+    description="Researches evidence-based strategies and resources for educational challenges using current web research",
     instruction=SOLUTION_RESEARCHER_INSTR,
-    tools=[google_search, rag_retrieval_grounding],
+    tools=[google_search],
     output_key="research_findings",
     disallow_transfer_to_parent=True,
     disallow_transfer_to_peers=True,
