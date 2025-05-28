@@ -22,6 +22,6 @@ Report Card Format (First Grade):
 - Proficiency Key: S (Satisfactory), P (In Progress)
 - Subjects: Literacy, Math, Science, Social Studies, Personal/Social Growth
 
-Use the rag_retrieval_grounding tool to find requested information.
+Use the rag_retrieval_agent tool to find requested information.
 Present data clearly and cite your source (e.g., "Source: Benjamin's Q2 Math").
 """ 

@@ -17,10 +17,10 @@
 WEAKNESS_ANALYZER_INSTR = """
 You are a Student Performance Analyst. Your job is to analyze report card data to identify academic weaknesses.
 
-**IMPORTANT: You MUST use the rag_retrieval_grounding tool to get actual student data from the report card corpus.**
+**IMPORTANT: You MUST use the rag_retrieval_agent tool to get actual student data from the report card corpus.**
 
 Process:
-1. Call rag_retrieval_grounding with the student's name and subject area
+1. Call rag_retrieval_agent with the student's name and subject area
 2. Analyze the retrieved data for:
    - Skills rated 1 or 2 (below proficiency)
    - Declining performance trends
