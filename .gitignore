@@ -111,4 +111,7 @@ docs/_build/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log* 
+yarn-error.log*
+
+# Travel Concierge - example project to ignore
+travel_concierge/ 
