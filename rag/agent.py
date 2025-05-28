@@ -12,40 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+"""Student Report Card RAG Multi-Agent System following ADK best practices."""
 
 from google.adk.agents import Agent
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
-from vertexai.preview import rag
+from google.adk.tools.agent_tool import AgentTool
 
-from dotenv import load_dotenv
-from .prompts import return_instructions_root
-
-load_dotenv()
-
-ask_vertex_retrieval = VertexAiRagRetrieval(
-    name='retrieve_student_report_data',
-    description=(
-        'Use this tool to retrieve student report card data, academic performance information, '
-        'grades, assessments, and educational progress details from the student report card corpus. '
-        'This tool provides access to specific student performance data, teacher feedback, '
-        'learning objectives progress, and academic standards assessments.'
-    ),
-    rag_resources=[
-        rag.RagResource(
-            # Uses the student report card corpus from environment
-            rag_corpus=os.environ.get("RAG_CORPUS")
-        )
-    ],
-    similarity_top_k=5,
-    vector_distance_threshold=0.7,
-)
+from rag import prompt
+from rag.sub_agents.data_retriever.agent import data_retriever_agent
+from rag.sub_agents.weakness_analyzer.agent import weakness_analyzer_agent
+from rag.sub_agents.solution_researcher.agent import solution_researcher_agent
+from rag.sub_agents.study_planner.agent import study_planner_agent
+from rag.sub_agents.presentation_formatter.agent import presentation_formatter_agent
 
 root_agent = Agent(
-    model='gemini-2.0-flash-001',
-    name='student_report_card_agent',
-    instruction=return_instructions_root(),
+    model="gemini-2.0-flash",
+    name="root_agent",
+    description="Educational Analysis Coordinator that helps analyze student report cards and create improvement plans",
+    instruction=prompt.ROOT_AGENT_INSTR,
     tools=[
-        ask_vertex_retrieval,
-    ]
+        AgentTool(agent=data_retriever_agent),
+        AgentTool(agent=weakness_analyzer_agent),
+        AgentTool(agent=solution_researcher_agent),
+        AgentTool(agent=study_planner_agent),
+        AgentTool(agent=presentation_formatter_agent),
+    ],
 )
+
+# Note: The `adk_config.yaml` should point to this `root_agent`.
+# Example adk_config.yaml:
+# agents:
+#   rag:
+#     name: "Student Report Card Multi-Agent System"
+#     module: "rag"
+#     agent_name: "root_agent"
+#     type: "conversational"

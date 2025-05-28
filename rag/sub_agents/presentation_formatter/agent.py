@@ -12,12 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Presentation Formatter agent for creating professional educational reports."""
 
-from .agent import root_agent
+from google.adk.agents import Agent
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+from rag.sub_agents.presentation_formatter.prompt import PRESENTATION_FORMATTER_INSTR
+
+presentation_formatter_agent = Agent(
+    model="gemini-2.0-flash",
+    name="presentation_formatter_agent",
+    description="Formats educational analysis into professional, user-friendly reports",
+    instruction=PRESENTATION_FORMATTER_INSTR,
+    output_key="formatted_report",
+    disallow_transfer_to_parent=True,
+    disallow_transfer_to_peers=True,
+) 

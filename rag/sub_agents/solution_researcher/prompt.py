@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Prompts for the Solution Researcher agent."""
 
-from .agent import root_agent
+SOLUTION_RESEARCHER_INSTR = """
+You are an Educational Interventions Researcher. Find evidence-based teaching strategies and resources for K-2 academic challenges.
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+Use google_search to research:
+- Evidence-based interventions
+- Teaching strategies
+- Educational resources
+- Age-appropriate methods
+
+Focus on practical, actionable strategies and save findings to session state.
+""" 

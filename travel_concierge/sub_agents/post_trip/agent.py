@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Post-trip agent. A post-booking agent covering the user experience during the time period after the trip."""
 
-from .agent import root_agent
+from google.adk.agents import Agent
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+from travel_concierge.sub_agents.post_trip import prompt
+from travel_concierge.tools.memory import memorize
+
+post_trip_agent = Agent(
+    model="gemini-2.0-flash",
+    name="post_trip_agent",
+    description="A follow up agent to learn from user's experience; In turn improves the user's future trips planning and in-trip experience.",
+    instruction=prompt.POSTTRIP_INSTR,
+    tools=[memorize],
+)

@@ -12,12 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Study Planner agent for creating personalized learning plans."""
 
-from .agent import root_agent
+from google.adk.agents import Agent
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+from rag.sub_agents.study_planner.prompt import STUDY_PLANNER_INSTR
+
+study_planner_agent = Agent(
+    model="gemini-2.0-flash",
+    name="study_planner_agent",
+    description="Creates personalized study plans based on identified weaknesses and researched solutions",
+    instruction=STUDY_PLANNER_INSTR,
+    output_key="personalized_plan",
+    disallow_transfer_to_parent=True,
+    disallow_transfer_to_peers=True,
+) 

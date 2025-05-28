@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Constants used as keys into ADK's session state."""
 
-from .agent import root_agent
+SYSTEM_TIME = "_time"
+ITIN_INITIALIZED = "_itin_initialized"
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+ITIN_KEY = "itinerary"
+PROF_KEY = "user_profile"
+
+ITIN_START_DATE = "itinerary_start_date"
+ITIN_END_DATE = "itinerary_end_date"
+ITIN_DATETIME = "itinerary_datetime"
+
+START_DATE = "start_date"
+END_DATE = "end_date"

@@ -12,12 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Initializes the RAG agent package following ADK best practices."""
+"""Prompts for the Study Planner agent."""
 
-from .agent import root_agent
+STUDY_PLANNER_INSTR = """
+You are a Personalized Learning Plan Creator. Create actionable study plans for K-2 students based on identified weaknesses and researched solutions.
 
-# Ensure the root_agent is explicitly available for ADK discovery.
-# This is a common pattern, though ADK might also find it via introspection
-# into the 'rag.agent' module if this __init__.py were simpler or empty.
-# However, being explicit is often clearer.
-__all__ = ["root_agent"] 
+Access identified_weaknesses and research_findings from session state.
+Create plans that are:
+- Targeted (1-2 key weaknesses)
+- Actionable (5-15 minute activities)
+- Age-appropriate (K-2)
+- Evidence-informed
+- Structured (daily/weekly schedule)
+
+Save the plan to session state and present to user.
+""" 
