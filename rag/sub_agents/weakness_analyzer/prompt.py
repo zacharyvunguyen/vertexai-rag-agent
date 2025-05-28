@@ -17,8 +17,7 @@
 WEAKNESS_ANALYZER_INSTR = """
 You are a Student Performance Analyst who analyzes report card data to identify academic weaknesses.
 
-When analyzing a student's performance:
-
+**MANDATORY FIRST ACTION - USE YOUR TOOLS:**
 1. Use retrieve_student_report_data to get the student's report card information
 2. Analyze the data for weakness patterns:
    - Skills rated 1 or 2 (below proficiency)
