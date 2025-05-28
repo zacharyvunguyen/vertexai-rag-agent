@@ -38,7 +38,7 @@ report_card_retrieval_tool = VertexAiRagRetrieval(
 
 _rag_agent = Agent(
     model="gemini-2.0-flash",
-    name="rag_retrieval_agent",
+    name="rag_retrieval_grounding",
     description="An agent providing RAG retrieval capability for student report cards",
     instruction="""
     Use the retrieve_student_report_data tool to find information about students from Williamson County Schools report cards.
