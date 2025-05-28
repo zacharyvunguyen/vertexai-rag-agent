@@ -22,7 +22,7 @@ from rag.sub_agents.solution_researcher.prompt import SOLUTION_RESEARCHER_INSTR
 solution_researcher_agent = Agent(
     model="gemini-2.0-flash",
     name="solution_researcher_agent",
-    description="Researches evidence-based strategies and resources for educational challenges using current web research",
+    description="Agent to research evidence-based educational interventions using Google Search",
     instruction=SOLUTION_RESEARCHER_INSTR,
     tools=[google_search],
     output_key="research_findings",
