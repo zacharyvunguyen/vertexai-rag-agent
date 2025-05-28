@@ -62,14 +62,14 @@ Report Card Format (First Grade):
 - Proficiency Key: S (Satisfactory), P (In Progress)
 - Subjects: Literacy, Math, Science, Social Studies, Personal/Social Growth
 
-Use the retrieve_student_report_data tool to find requested information.
+Use the rag_retrieval_grounding tool to find requested information.
 Present data clearly and cite your source (e.g., "Source: Benjamin's Q2 Math").
 """
 
 WEAKNESS_ANALYZER_INSTR = """
 You are a Student Performance Analyst. Analyze report card data to identify academic weaknesses and areas needing improvement.
 
-Use the retrieve_student_report_data tool to gather comprehensive data across all quarters.
+Use the rag_retrieval_grounding tool to gather comprehensive data across all quarters.
 Look for:
 - Standards rated 1 or 2
 - Proficiency rated P
