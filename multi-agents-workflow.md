@@ -3,6 +3,132 @@
 ## 🎯 System Overview
 The Student Report Card RAG Multi-Agent System is a sophisticated AI-powered educational analytics platform that transforms student report card analysis through intelligent multi-agent collaboration. The system processes educational documents, extracts insights, and generates comprehensive intervention recommendations through a coordinated workflow of specialized AI agents.
 
+## 🛠️ Technology Stack
+
+### Core Framework
+**Agent Development Kit (ADK)**
+- **Primary Framework:** Google Cloud's Agent Development Kit for multi-agent orchestration
+- **Agent Architecture:** Supports complex multi-agent workflows with built-in state management
+- **Tool Integration:** Native support for search tools and agent-to-agent transfers
+- **Session Management:** Persistent context preservation across agent interactions
+- **Function Calling:** Advanced function calling capabilities for tool integration
+- **Memory System:** Built-in shared memory for inter-agent communication
+
+### Google Cloud Platform Services
+**Vertex AI Platform**
+- **AI Model Hub:** Central platform for AI/ML model management
+- **RAG Services:** VertexAiRagRetrieval for document corpus integration
+- **Model Deployment:** Scalable AI model serving infrastructure
+- **Vector Search:** High-performance semantic search capabilities
+
+**Google Cloud Storage**
+- **Document Repository:** Centralized storage for educational documents
+- **Scalability:** Enterprise-grade file storage and management
+- **Security:** Encrypted storage with access controls
+
+**Vertex AI Search**
+- **Vector Indexing:** Optimized vector search for semantic retrieval
+- **Embedding Storage:** Efficient storage and querying of document embeddings
+- **Real-time Search:** Fast semantic search across educational content
+
+### AI/ML Models
+**Gemini 2.0 Flash**
+- **Language Model:** Advanced LLM with superior reasoning capabilities
+- **Function Calling:** Native tool integration and orchestration
+- **Context Understanding:** Large context window for complex analysis
+- **Real-time Processing:** Fast response generation for interactive experiences
+
+**text-embedding-005**
+- **Embedding Model:** Google's latest text embedding model
+- **Semantic Understanding:** 768-dimensional vector representations
+- **Educational Content:** Optimized for educational document processing
+- **Chunk Processing:** 512-token chunks with 100-token overlap
+
+### Frontend & UI Technologies
+**Streamlit Framework**
+- **Web Framework:** Python-based web application framework
+- **Real-time Updates:** Live dashboard updates and interactions
+- **Component System:** Modular UI component architecture
+
+**Enhanced Streamlit Components**
+- **streamlit-option-menu:** Advanced navigation menu system
+- **streamlit-lottie:** Animated UI elements and loading indicators
+- **streamlit-extras:** Extended UI components for enhanced UX
+- **Plotly:** Interactive data visualizations and charts
+- **streamlit-aggrid:** Advanced data grid components
+
+### Python Libraries & Dependencies
+**Core Libraries**
+- **Python 3.12:** Latest stable Python version
+- **asyncio:** Asynchronous programming for agent coordination
+- **pydantic:** Data validation and settings management
+- **typing:** Type hints for code clarity and validation
+
+**Document Processing**
+- **PyPDF2/pdfplumber:** PDF document parsing and text extraction
+- **python-docx:** Microsoft Word document processing
+- **hashlib:** SHA-256 file hashing for duplicate detection
+
+**Data Handling**
+- **pandas:** Data manipulation and analysis
+- **numpy:** Numerical computing for vector operations
+- **json:** Structured data serialization and storage
+
+**Web & API Integration**
+- **requests:** HTTP client for external API calls
+- **urllib:** URL handling and web resource access
+- **google-cloud-storage:** GCS client library
+
+### Development & Deployment Tools
+**Configuration Management**
+- **adk_config.yaml:** ADK-specific configuration file
+- **requirements.txt:** Python dependency management
+- **YAML:** Configuration file format for system settings
+
+**Environment Management**
+- **python-dotenv:** Environment variable management
+- **Virtual Environments:** Isolated Python environments for dependencies
+- **.env files:** Secure environment variable storage
+
+**Version Control & Documentation**
+- **Git:** Source code version control
+- **Markdown:** Documentation and README files
+- **Mermaid:** Architecture diagram generation (converted to written descriptions)
+
+### Integration Technologies
+**Search & Retrieval**
+- **RAG (Retrieval-Augmented Generation):** Document-grounded AI responses
+- **Vector Similarity Search:** Cosine similarity for semantic matching
+- **Hybrid Search:** Combination of semantic and keyword search
+
+**Multi-Agent Communication**
+- **ADK Transfer System:** Native agent-to-agent communication
+- **Session Context:** Persistent state across agent transfers
+- **Tool Chaining:** Sequential tool execution across agents
+
+**External APIs**
+- **Google Search API:** Web search capabilities for educational research
+- **Vertex AI APIs:** Complete Google Cloud AI platform integration
+- **Cloud Storage APIs:** File upload, storage, and retrieval services
+
+### Security & Authentication
+- **Google Cloud IAM:** Identity and access management
+- **Service Account Keys:** Secure API authentication
+- **Environment Variables:** Secure credential storage
+- **HTTPS/TLS:** Encrypted communication protocols
+
+### Performance & Scalability
+- **Cloud-Native Architecture:** Designed for cloud scalability
+- **Async Processing:** Non-blocking operations for better performance
+- **Caching Systems:** Efficient data and embedding caching
+- **Load Balancing:** Distributed processing capabilities
+
+### Monitoring & Analytics
+- **Streamlit Metrics:** Real-time system performance monitoring
+- **Cloud Logging:** Comprehensive system logging and debugging
+- **Error Tracking:** Exception handling and error reporting
+- **Usage Analytics:** System usage patterns and optimization insights
+
 ## 👨‍🏫 User Interface Layer
 
 ### User Entry Points
