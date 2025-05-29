@@ -15,6 +15,12 @@
 
 The **Student Report Card RAG Multi-Agent System** is a revolutionary AI-powered platform that transforms educational data analysis through intelligent multi-agent collaboration. Built on Google's cutting-edge Agent Development Kit (ADK) and Vertex AI RAG Engine, this system provides comprehensive student performance insights through specialized AI agents working in harmony.
 
+## 🎬 Live System Demonstration
+
+![Student Report Card RAG System Demo](diagrams/app%20(1).gif)
+
+*Real-time demonstration of the multi-agent system analyzing student report cards, from initial query through intelligent agent collaboration to comprehensive educational recommendations.*
+
 ### 🚀 Key Innovations
 
 - **🤖 Multi-Agent Architecture**: 5 specialized AI agents with distinct expertise areas
