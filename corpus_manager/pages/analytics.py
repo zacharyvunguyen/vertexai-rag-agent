@@ -6,8 +6,9 @@ size distribution, and upload timeline.
 
 import streamlit as st
 import pandas as pd
+from collections import Counter
 from typing import List, Dict
-from ..utils.formatters import format_document_name
+from corpus_manager.utils.formatters import format_document_name
 
 
 def render_analytics(documents: List[Dict]):

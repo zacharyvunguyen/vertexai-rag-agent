@@ -4,7 +4,7 @@ Contains controls for refreshing data, uploading documents, and danger zone oper
 """
 
 import streamlit as st
-from ..config import SUPPORTED_FILE_TYPES
+from corpus_manager.config import SUPPORTED_FILE_TYPES
 
 
 def render_sidebar():

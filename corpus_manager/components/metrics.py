@@ -1,11 +1,11 @@
 """
-Metrics component for displaying corpus statistics.
-Shows key metrics like document count, total size, file types, and latest upload.
+Metrics component for the RAG Corpus Manager.
+Displays key corpus statistics and metrics.
 """
 
 import streamlit as st
 from typing import List, Dict
-from ..utils.formatters import format_file_size, format_date
+from corpus_manager.utils.formatters import format_file_size, format_date
 
 
 def render_metrics(documents: List[Dict]):

@@ -1,0 +1,9 @@
+project_name: "student-report-card-rag"
+agents:
+  # Main Educational Coordinator Multi-Agent System
+  rag:
+    name: "Educational Coordinator"
+    description: "Smart educational coordinator that intelligently routes queries for student report card analysis"
+    module: "rag"
+    agent_name: "root_agent"
+    type: "conversational" 

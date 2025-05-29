@@ -1,9 +1,3 @@
-# Environment variables and sensitive data
-.env
-keys/
-*.key
-*.json
-
 # Python
 __pycache__/
 *.py[cod]
@@ -29,21 +23,40 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Virtual environments
-.venv/
+# Environment & Configuration
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv
+env/
 venv/
 ENV/
-env/
-.env/
+env.bak/
+venv.bak/
 
-# IDEs
+# Security & Credentials
+keys/
+*.key
+*.pem
+*.p12
+*.json
+service-account*.json
+credentials.json
+.credentials/
+secrets/
+
+# IDE & Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.pydevproject
 
-# OS
+# Operating System
 .DS_Store
 .DS_Store?
 ._*
@@ -52,19 +65,70 @@ env/
 ehthumbs.db
 Thumbs.db
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# Streamlit
-.streamlit/
-
 # Logs
 *.log
+logs/
+*.log.*
 
 # Temporary files
 tmp/
 temp/
-*.tmp 
+.cache/
+.pytest_cache/
+
+# Streamlit
+.streamlit/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Project specific
+travel_concierge/
+
+# Test artifacts
+test_*.py
+*_test.py
+.coverage
+htmlcov/
+
+# Generated reports
+reports/
+*.pdf
+*.html
+
+# ADK artifacts
+.adk/
+
+# Google Cloud
+gcloud/
+.gcloudignore
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Documentation builds
+docs/_build/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+
+# Node.js (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Interview preparation (private)
+interview.md 
